@@ -147,7 +147,7 @@ fn run(ctx: egui::Context, tx: Sender<Sample>, interval: Arc<AtomicU64>) {
         let sysinfo_freq = sys.cpus().iter().map(|c| c.frequency()).max().unwrap_or(0);
 
         let (mut rx, mut tx_bytes) = (0u64, 0u64);
-        for (_name, data) in networks.list() {
+        for data in networks.list().values() {
             rx += data.received();
             tx_bytes += data.transmitted();
         }
@@ -155,13 +155,13 @@ fn run(ctx: egui::Context, tx: Sender<Sample>, interval: Arc<AtomicU64>) {
         let net_tx_bps = tx_bytes as f64 / dt;
 
         // ---- disks: refresh occasionally (they change slowly) ----
-        if cycle % 5 == 0 {
+        if cycle.is_multiple_of(5) {
             disks.refresh(false);
             cached_disks = read_disks(&disks);
         }
 
         // ---- processes: moderately expensive, refresh every few cycles ----
-        if cycle % 3 == 0 {
+        if cycle.is_multiple_of(3) {
             sys.refresh_processes(ProcessesToUpdate::All, true);
             cached_procs = top_processes(&sys, 5);
         }
@@ -228,7 +228,7 @@ fn read_disks(disks: &Disks) -> Vec<DiskInfo> {
         out.push(DiskInfo { mount, used, total });
     }
     // De-duplicate volumes that report identical size (APFS containers).
-    out.sort_by(|a, b| b.total.cmp(&a.total));
+    out.sort_by_key(|d| std::cmp::Reverse(d.total));
     out.dedup_by(|a, b| a.total == b.total && a.used == b.used);
     out.truncate(4);
     out

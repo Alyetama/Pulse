@@ -21,6 +21,16 @@ fn exe_path() -> Option<String> {
         .and_then(|p| p.to_str().map(str::to_owned))
 }
 
+/// Escape XML-significant characters so a path containing `&`, `<`, `>`, etc.
+/// can't produce a malformed plist (which `launchctl` would then reject).
+fn xml_escape(s: &str) -> String {
+    s.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&apos;")
+}
+
 /// Reflects reality: is the LaunchAgent currently installed on disk?
 pub fn is_enabled() -> bool {
     plist_path().map(|p| p.exists()).unwrap_or(false)
@@ -30,7 +40,7 @@ pub fn is_enabled() -> bool {
 pub fn set_enabled(enable: bool) -> Result<(), String> {
     let path = plist_path().ok_or("no home directory")?;
     if enable {
-        let exe = exe_path().ok_or("cannot resolve executable path")?;
+        let exe = xml_escape(&exe_path().ok_or("cannot resolve executable path")?);
         if let Some(parent) = path.parent() {
             std::fs::create_dir_all(parent).map_err(|e| e.to_string())?;
         }
