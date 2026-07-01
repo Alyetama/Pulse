@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse — macOS menu-bar system monitor</title>
+<meta name="description" content="A beautiful, lightweight macOS menu-bar monitor for live CPU, memory, GPU, disk, and network stats.">
+<link rel="icon" href="mockup.png">
+<style>
+  :root {
+    --ink: #0e1116;
+    --card: rgba(255,255,255,0.06);
+    --line: rgba(255,255,255,0.14);
+    --text: #f4f6fb;
+    --muted: #b6bdcc;
+    --accent: #6d74ff;
+    --accent2: #12b6e8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1100px 600px at 20% -10%, rgba(109,116,255,0.35), transparent 60%),
+      radial-gradient(900px 600px at 100% 10%, rgba(18,182,232,0.30), transparent 55%),
+      var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-align: center;
+    padding: 0 20px 80px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  header { padding: 84px 0 8px; }
+  h1 {
+    font-size: 60px; font-weight: 800; letter-spacing: -0.02em;
+    background: linear-gradient(90deg, #fff, #cdd4ff);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .tag { color: var(--muted); font-size: 20px; margin-top: 14px; line-height: 1.4; }
+  .shot { margin: 40px auto 8px; }
+  .shot img {
+    width: 100%; max-width: 760px; height: auto; border-radius: 16px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+  }
+  .cta { margin: 34px 0 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(180deg, var(--accent), #545fe6);
+    color: #fff; text-decoration: none; font-size: 19px; font-weight: 700;
+    padding: 16px 30px; border-radius: 14px;
+    box-shadow: 0 14px 34px rgba(84,95,230,0.45);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(84,95,230,0.55); }
+  .sub { color: var(--muted); font-size: 14px; margin-top: 12px; }
+  .features {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px; margin: 46px 0; text-align: left;
+  }
+  .feature {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; font-size: 15px; color: var(--muted);
+  }
+  .feature b { color: var(--text); }
+  .open {
+    text-align: left; background: var(--card); border: 1px solid var(--line);
+    border-radius: 16px; padding: 26px 28px; margin: 20px auto 0; max-width: 720px;
+    scroll-margin-top: 24px;
+  }
+  .open h2 { font-size: 22px; margin-bottom: 6px; }
+  .open p.lead { color: var(--muted); margin-bottom: 16px; font-size: 15px; }
+  .open ol { margin-left: 20px; line-height: 1.9; font-size: 15.5px; }
+  .open code {
+    background: rgba(0,0,0,0.45); border: 1px solid var(--line); border-radius: 6px;
+    padding: 2px 7px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+  }
+  .flash { animation: flash 1.6s ease; }
+  @keyframes flash {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(109,116,255,0); }
+    18%      { box-shadow: 0 0 0 4px rgba(109,116,255,0.7); }
+  }
+  footer { color: var(--muted); font-size: 13px; margin-top: 48px; }
+  footer a { color: var(--accent2); text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Pulse</h1>
+      <p class="tag">A beautiful, lightweight macOS menu-bar monitor for live<br>CPU, memory, GPU, disk, and network stats.</p>
+    </header>
+
+    <div class="shot"><img src="mockup.png" alt="Pulse showing live CPU, memory and GPU usage in a menu-bar popover"></div>
+
+    <div class="cta">
+      <a class="btn" id="download"
+         href="https://github.com/Alyetama/Pulse/releases/latest/download/Pulse.dmg"
+         onclick="revealOpen()">⬇︎ Download for macOS</a>
+      <div class="sub">Free · Apple Silicon &amp; Intel · requires macOS 11+</div>
+    </div>
+
+    <div class="features">
+      <div class="feature"><b>CPU</b> — overall %, E/P clusters, per-core bars, frequency</div>
+      <div class="feature"><b>Memory</b> — used / total, %, and swap</div>
+      <div class="feature"><b>GPU</b> — utilisation &amp; power on Apple Silicon, no <code>sudo</code></div>
+      <div class="feature"><b>Network</b> — live up / down throughput</div>
+      <div class="feature"><b>Disk</b> — used % per mounted volume</div>
+      <div class="feature"><b>Power &amp; thermals</b> — CPU / GPU / ANE watts &amp; temps</div>
+    </div>
+
+    <section class="open" id="open">
+      <h2>How to open the app</h2>
+      <p class="lead">Pulse is signed <b>ad-hoc</b> (no paid Apple Developer ID), so macOS blocks it on first launch. Any one of these opens it — you only need to do this once:</p>
+      <ol>
+        <li><b>Right-click (Control-click)</b> <code>Pulse.app</code> in Finder → <b>Open</b> → <b>Open</b>.</li>
+        <li>If that's blocked on newer macOS: <b>System Settings → Privacy &amp; Security → scroll down → "Open Anyway"</b>.</li>
+        <li>Terminal fallback: <code>xattr -dr com.apple.quarantine /Applications/Pulse.app</code></li>
+      </ol>
+    </section>
+
+    <footer>
+      <a href="https://github.com/Alyetama/Pulse">Source on GitHub</a> · MIT © 2026 Alyetama
+    </footer>
+  </div>
+
+  <script>
+    function revealOpen() {
+      var el = document.getElementById('open');
+      el.classList.remove('flash');
+      void el.offsetWidth;            // restart the animation
+      el.classList.add('flash');
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+</body>
+</html>

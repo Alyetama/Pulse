@@ -1,0 +1,30 @@
+[package]
+name = "statusapp"
+version = "0.1.0"
+edition = "2024"
+description = "Pulse — a beautiful live hardware status monitor for the macOS menu bar"
+authors = ["Alyetama"]
+
+[[bin]]
+name = "Pulse"
+path = "src/main.rs"
+
+[dependencies]
+crossbeam-channel = "0.5.15"
+dirs = "6.0.0"
+eframe = "0.35.0"
+egui = "0.35.0"
+image = { version = "0.25.10", default-features = false, features = ["png"] }
+macmon = "0.7.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+sysinfo = "0.39.5"
+tray-icon = "0.24.1"
+winit = "0.30"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+strip = true
+codegen-units = 1
+panic = "abort"
