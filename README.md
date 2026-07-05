@@ -37,7 +37,7 @@ Pulse is signed **ad-hoc** (no paid Apple Developer ID), so macOS blocks it on f
 2. If that's blocked on newer macOS: **System Settings → Privacy & Security → scroll down → "Open Anyway"**.
 3. Terminal fallback:
    ```bash
-   xattr -dr com.apple.quarantine /Applications/Pulse.app
+   /usr/bin/xattr -dr com.apple.quarantine /Applications/Pulse.app
    ```
 
 ## Build from source
