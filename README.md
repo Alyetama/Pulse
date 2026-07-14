@@ -18,7 +18,7 @@
 
 - **CPU** — overall %, E-core / P-core cluster residency, per-core bars, frequency
 - **Memory** — used / total, %, and swap
-- **GPU** — utilisation % + core count on Apple Silicon (via `macmon`, no `sudo`); degrades gracefully on Intel
+- **GPU** — utilisation % + core count on Apple Silicon (via `macmon`, no `sudo`)
 - **Disk** — used % per mounted volume
 - **Network** — live up/down throughput (rate from the delta between polls)
 - **Power & thermals** — CPU / GPU / ANE watts, package power, CPU / GPU temperature
