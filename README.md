@@ -1,6 +1,6 @@
 <h1 align="center">Pulse</h1>
 
-<p align="center">A beautiful, lightweight macOS menu-bar monitor for live CPU, memory, GPU, disk, and network stats.</p>
+<p align="center">A macOS menu-bar monitor for live CPU, memory, GPU, disk, and network stats.</p>
 
 <p align="center">
   <img src="docs/mockup.png" alt="Pulse — live hardware status in the macOS menu bar" width="720">
@@ -25,13 +25,13 @@
 - **Top processes** — the 5 busiest by CPU, with memory
 - Sparklines of recent history, green→amber→red threshold colouring, automatic light/dark mode
 - Configurable menu-bar readout (CPU / GPU / Memory / icon-only) and poll interval, plus a Launch-at-Login toggle
-- Runs as a menu-bar-only accessory (no Dock icon); sampling happens off the UI thread so it stays featherweight
+- Menu-bar-only (no Dock icon). Sampling runs on a background thread, so the panel never blocks the UI
 
 Left-click the icon to open the panel, right-click for the menu (Preferences, Launch at Login, Quit).
 
 ## First launch (opening an unsigned app)
 
-Pulse is signed **ad-hoc** (no paid Apple Developer ID), so macOS blocks it on first launch. Any one of these opens it — you only need to do this once:
+Pulse is signed **ad-hoc**, so macOS blocks it on first launch. Any one of these opens it, and you only do it once:
 
 1. **Right-click (Control-click)** `Pulse.app` in Finder → **Open** → **Open**.
 2. If that's blocked on newer macOS: **System Settings → Privacy & Security → scroll down → "Open Anyway"**.
