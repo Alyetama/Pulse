@@ -1,6 +1,6 @@
 [package]
 name = "statusapp"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
 description = "Pulse — a beautiful live hardware status monitor for the macOS menu bar"
 authors = ["Alyetama"]
@@ -12,7 +12,7 @@ path = "src/main.rs"
 [dependencies]
 crossbeam-channel = "0.5.15"
 dirs = "6.0.0"
-eframe = "0.35.0"
+eframe = { version = "0.35.0", default-features = false, features = ["glow", "default_fonts", "accesskit"] }
 egui = "0.35.0"
 image = { version = "0.25.10", default-features = false, features = ["png"] }
 macmon = "0.7.0"
