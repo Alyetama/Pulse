@@ -74,6 +74,9 @@ pub struct PulseApp {
     last_hide: Instant,
     // Window-space x (points) where the popover tail points — i.e. the icon centre.
     arrow_x: f32,
+    // When true, snap the scroll area to the top on the next frame (used when
+    // opening Preferences so the panel is visible even if the user scrolled).
+    scroll_to_top: bool,
 }
 
 impl PulseApp {
@@ -134,6 +137,7 @@ impl PulseApp {
             show_guard: 0,
             last_hide: Instant::now() - std::time::Duration::from_secs(1),
             arrow_x: WINDOW_W / 2.0,
+            scroll_to_top: false,
         }
     }
 
@@ -228,6 +232,7 @@ impl PulseApp {
                 ID_OPEN => self.show_panel(ctx),
                 ID_PREFS => {
                     self.show_prefs = true;
+                    self.scroll_to_top = true;
                     self.show_panel(ctx);
                 }
                 ID_LOGIN => self.toggle_login(),
@@ -611,21 +616,31 @@ impl PulseApp {
     }
 
     fn footer(&mut self, ui: &mut egui::Ui, pal: &Palette, ctx: &egui::Context) {
+        let _ = ctx;
         widgets::separator(ui, pal);
-        widgets::gap(ui, 8.0);
+        widgets::gap(ui, 7.0);
         ui.horizontal(|ui| {
-            if ui
-                .button(RichText::new("⚙ Preferences").size(11.5))
-                .clicked()
-            {
+            let prefs = ui.add(
+                egui::Button::new(RichText::new("⚙  Preferences").size(12.0).color(pal.subtle))
+                    .frame(false),
+            );
+            if prefs.clicked() {
                 self.show_prefs = !self.show_prefs;
+                if self.show_prefs {
+                    self.scroll_to_top = true;
+                }
             }
             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                if ui.button(RichText::new("Quit").size(11.5)).clicked() {
+                let quit = ui.add(
+                    egui::Button::new(
+                        RichText::new("Quit").size(12.0).color(Color32::from_rgb(255, 105, 97)),
+                    )
+                    .frame(false),
+                );
+                if quit.clicked() {
                     self.cfg.save();
                     std::process::exit(0);
                 }
-                let _ = ctx; // reserved for future actions
             });
         });
     }
@@ -703,12 +718,23 @@ impl eframe::App for PulseApp {
             // Reserve room for the footer (separator + gaps + buttons) so it
             // always stays inside the panel box, then let the scroll area fill
             // whatever height remains.
-            let footer_reserve = 46.0;
+            let footer_reserve = 44.0;
             let sa_max = (ui.available_height() - footer_reserve).max(120.0);
-            egui::ScrollArea::vertical()
-                .auto_shrink([false, false])
-                .max_height(sa_max)
-                .show(ui, |ui| {
+            let mut scroll = egui::ScrollArea::vertical()
+                // Shrink to content height so the footer sits right below the
+                // last card instead of after a block of empty space.
+                .auto_shrink([false, true])
+                .max_height(sa_max);
+            if self.scroll_to_top {
+                scroll = scroll.vertical_scroll_offset(0.0);
+                self.scroll_to_top = false;
+            }
+            scroll.show(ui, |ui| {
+                    // Preferences opens at the top so it's visible immediately.
+                    if self.show_prefs {
+                        self.prefs_card(ui, &pal);
+                        widgets::gap(ui, 8.0);
+                    }
                     self.cpu_card(ui, &pal);
                     widgets::gap(ui, 8.0);
                     self.mem_card(ui, &pal);
@@ -722,12 +748,7 @@ impl eframe::App for PulseApp {
                     self.net_card(ui, &pal);
                     widgets::gap(ui, 8.0);
                     self.proc_card(ui, &pal);
-                    if self.show_prefs {
-                        widgets::gap(ui, 8.0);
-                        self.prefs_card(ui, &pal);
-                    }
                 });
-            widgets::gap(ui, 8.0);
             let ctx = ui.ctx().clone();
             self.footer(ui, &pal, &ctx);
         });
