@@ -1,6 +1,6 @@
 [package]
 name = "statusapp"
-version = "1.0.2"
+version = "1.0.3"
 edition = "2024"
 description = "Pulse — a beautiful live hardware status monitor for the macOS menu bar"
 authors = ["Alyetama"]

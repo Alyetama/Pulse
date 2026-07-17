@@ -700,7 +700,11 @@ impl eframe::App for PulseApp {
 
             self.header(ui, &pal);
             widgets::gap(ui, 10.0);
-            let sa_max = WINDOW_H - 2.0 * OUTER_MARGIN as f32 - 96.0;
+            // Reserve room for the footer (separator + gaps + buttons) so it
+            // always stays inside the panel box, then let the scroll area fill
+            // whatever height remains.
+            let footer_reserve = 46.0;
+            let sa_max = (ui.available_height() - footer_reserve).max(120.0);
             egui::ScrollArea::vertical()
                 .auto_shrink([false, false])
                 .max_height(sa_max)
