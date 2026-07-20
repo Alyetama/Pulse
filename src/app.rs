@@ -566,8 +566,25 @@ impl PulseApp {
         if !self.show_prefs {
             return;
         }
+        let mut close_clicked = false;
         card(ui, pal, |ui| {
-            metric_head_plain(ui, pal, "Preferences");
+            ui.horizontal(|ui| {
+                ui.label(
+                    RichText::new("Preferences")
+                        .size(12.5)
+                        .strong()
+                        .color(pal.text),
+                );
+                ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                    let close = ui.add(
+                        egui::Button::new(RichText::new("×").size(19.0).color(pal.subtle))
+                            .frame(false),
+                    );
+                    if close.on_hover_text("Close preferences").clicked() {
+                        close_clicked = true;
+                    }
+                });
+            });
             widgets::gap(ui, 8.0);
 
             // Update interval.
@@ -613,6 +630,9 @@ impl PulseApp {
                 self.toggle_login();
             }
         });
+        if close_clicked {
+            self.show_prefs = false;
+        }
     }
 
     fn footer(&mut self, ui: &mut egui::Ui, pal: &Palette, ctx: &egui::Context) {

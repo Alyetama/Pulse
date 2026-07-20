@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NAME="Pulse"
 BUNDLE_ID="com.alyetama.pulse"
-VERSION="1.0.4"
+VERSION="1.0.5"
 APP="$ROOT/dist/$NAME.app"
 BIN="$ROOT/target/release/$NAME"
 ICON="$ROOT/assets/AppIcon.icns"
@@ -37,7 +37,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundleIconFile</key>        <string>AppIcon</string>
     <key>CFBundlePackageType</key>     <string>APPL</string>
     <key>CFBundleShortVersionString</key> <string>$VERSION</string>
-    <key>CFBundleVersion</key>         <string>5</string>
+    <key>CFBundleVersion</key>         <string>6</string>
     <key>LSMinimumSystemVersion</key>  <string>11.0</string>
     <key>LSUIElement</key>             <true/>
     <key>NSHighResolutionCapable</key> <true/>
